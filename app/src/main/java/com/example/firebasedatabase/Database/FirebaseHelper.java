@@ -3,10 +3,14 @@ package com.example.firebasedatabase.Database;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.firebasedatabase.Model.Student;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.Objects;
 
@@ -20,9 +24,9 @@ public class FirebaseHelper {
     public Boolean addStudent(Student student) {
         try {
 
-            String studentId = studentsRef.push().getKey();
 
-            DatabaseReference studentRef = studentsRef.child(studentId);
+
+            DatabaseReference studentRef = studentsRef.child(student.getId());
             studentRef.child("name").setValue(student.getName());
             studentRef.child("age").setValue(student.getAge());
             studentRef.child("number").setValue(student.getNumber());
@@ -38,12 +42,29 @@ public class FirebaseHelper {
         return false;
     }
 
-    public boolean updateStudent(String studentId, Student student) {
+    public boolean updateStudent( Student student) {
         try {
-            studentsRef.child(studentId).setValue(student);
+            DatabaseReference studentRef=studentsRef.child(student.getId());
+            studentRef.child("name").setValue(student.getName());
+
+            studentRef.child("age").setValue(student.getAge());
+            studentRef.child("number").setValue(student.getNumber());
             return true;
         } catch (DatabaseException e) {
             return false;
         }
     }
+
+    public boolean DeleteStudent(Student student){
+        try{
+            DatabaseReference studentRef=studentsRef.child(student.getId());
+            studentRef.removeValue();
+            return true;
+        } catch (DatabaseException e){
+            return false;
+        }
+    }
+
+
+
 }
